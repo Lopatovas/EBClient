@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.css';
 
 import Home from './containers/Home';
 import Register from './containers/Register';

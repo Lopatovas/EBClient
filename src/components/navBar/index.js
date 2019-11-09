@@ -6,15 +6,15 @@ import PropTypes from 'prop-types';
 function NavBar(props) {
   const { routes } = props;
   return (
-    <nav>
-      {routes.map((route, i) => (
-        <ul className="nav" key={i}>
-          <li className="nav-item">
-            {route.action ? 'asd' : <Link className="nav-link active" to={route.url}>{route.name}</Link>}
+    <div className="shadow-sm mb-5 bg-white rounded">
+      <ul className="nav flex-row justify-content-center">
+        {routes.map((route, i) => (
+          <li className="nav-item" key={i}>
+            {route.action ? <a className="nav-link" href="/" onClick={(e) => { route.action(e); }}>Log out</a> : <Link className="nav-link" to={route.url}>{route.name}</Link>}
           </li>
-        </ul>
-      ))}
-    </nav>
+        ))}
+      </ul>
+    </div>
   );
 }
 

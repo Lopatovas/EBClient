@@ -1,7 +1,15 @@
 const navBarRoutes = {
   SIGNED_IN: [
     { name: 'Home', url: '/' },
-    { name: 'Log Out', url: '/', action: () => { console.log('logging out'); } },
+    {
+      name: 'Log Out',
+      url: '/',
+      action: (e) => {
+        e.preventDefault();
+        localStorage.clear();
+        console.log('logging out');
+      },
+    },
   ],
   DEFAULT: [
     { name: 'Home', url: '/' },
