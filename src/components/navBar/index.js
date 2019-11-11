@@ -10,7 +10,7 @@ function NavBar(props) {
       <ul className="nav flex-row justify-content-center">
         {routes.map((route, i) => (
           <li className="nav-item" key={i}>
-            {route.action ? <a className="nav-link" href="/" onClick={(e) => { route.action(e); }}>Log out</a> : <Link className="nav-link" to={route.url}>{route.name}</Link>}
+            {route.action ? <a className="nav-link" href="/" onClick={(e) => { e.preventDefault(); route.action(e); }}>Log out</a> : <Link className="nav-link" to={route.url}>{route.name}</Link>}
           </li>
         ))}
       </ul>

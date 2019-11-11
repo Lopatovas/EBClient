@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import navBarRoutes from '../../config/navRoutes';
-
-import NavBar from '../../components/navBar';
 import FormWrapper from '../../components/formWrapper';
 import Input from '../../components/input';
 
@@ -16,24 +13,23 @@ class Register extends React.Component {
 
   submitForm() {
     const { history } = this.props;
-    localStorage.setItem('isUser', 'yes');
-    history.push('/');
+    history.push('/EBClient/Login');
   }
 
   render() {
     return (
-      <div>
-        <NavBar routes={navBarRoutes.DEFAULT} />
-        <div className="container">
-          <FormWrapper callBack={this.submitForm}>
-            <Input labelText="Email" id="emailField">
-              <input type="email" className="form-control" id="emailField" placeholder="name@example.com" />
-            </Input>
-            <Input labelText="Password" id="passwordField">
-              <input type="password" className="form-control" id="passwordField" placeholder="" />
-            </Input>
-          </FormWrapper>
-        </div>
+      <div className="container">
+        <FormWrapper callBack={this.submitForm}>
+          <Input labelText="Name" id="nameField">
+            <input type="text" className="form-control" id="nameField" placeholder="Bob" />
+          </Input>
+          <Input labelText="Email" id="emailField">
+            <input type="email" className="form-control" id="emailField" placeholder="name@example.com" />
+          </Input>
+          <Input labelText="Password" id="passwordField">
+            <input type="password" className="form-control" id="passwordField" placeholder="" />
+          </Input>
+        </FormWrapper>
       </div>
     );
   }

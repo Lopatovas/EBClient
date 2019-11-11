@@ -19,7 +19,7 @@ function BookCard(props) {
         {facts.map((fact, i) => (<li className="list-group-item" key={i}>{fact}</li>))}
       </ul>
       <div className="card-body">
-        <Link className="btn btn-light" to={`/Book/${id}`}>{buttonTitle}</Link>
+        <Link className="btn btn-light" to={`/EBClient/Book/${id}`}>{buttonTitle}</Link>
       </div>
     </div>
   );

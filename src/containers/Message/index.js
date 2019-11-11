@@ -1,6 +1,6 @@
 import React from 'react';
 
-class LibraryDetails extends React.Component {
+class Message extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -9,10 +9,10 @@ class LibraryDetails extends React.Component {
   render() {
     return (
       <div>
-        <div>In LibraryDetails</div>
+        <div>In Message page</div>
       </div>
     );
   }
 }
 
-export default LibraryDetails;
+export default Message;

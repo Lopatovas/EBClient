@@ -11,7 +11,7 @@ function LibraryCard(props) {
       <div className="card-body">
         <h5 className="card-title">{cardHeader}</h5>
         <p className="card-text">{cardDescription}</p>
-        <Link className="btn btn-light" to={`/Library/${id}`}>{buttonTitle}</Link>
+        <Link className="btn btn-light" to={`/EBClient/Library/${id}`}>{buttonTitle}</Link>
       </div>
     </div>
   );
