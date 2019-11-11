@@ -27,7 +27,7 @@ class NavLayout extends React.Component {
   handleLogOut() {
     localStorage.removeItem('isUser');
     const { history } = this.props;
-    history.push('/Login');
+    history.push('/EBClient/Login');
   }
 
   render() {
