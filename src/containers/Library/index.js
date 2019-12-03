@@ -14,7 +14,7 @@ class Library extends React.Component {
     return (
       <div>
         {localStorage.getItem('isUser') ? <NavBar routes={navBarRoutes.SIGNED_IN} /> : <NavBar routes={navBarRoutes.DEFAULT} />}
-        <div className="container d-flex">
+        <div className="container d-flex flex-row flex-wrap">
           <BookCard
             id="5"
             title="The book of Amazing vol.1"
