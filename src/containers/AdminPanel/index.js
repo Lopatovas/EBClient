@@ -1,10 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import FormWrapper from '../../components/formWrapper';
 import Input from '../../components/input';
 
-class Register extends React.Component {
+class Panel extends React.Component {
   constructor(props) {
     super(props);
     this.submitForm = this.submitForm.bind(this);
@@ -12,9 +11,8 @@ class Register extends React.Component {
   }
 
   submitForm() {
-    const { history } = this.props;
     this.setState({ loading: true });
-    const params = {
+    const paramsRegister = {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -27,19 +25,36 @@ class Register extends React.Component {
       }),
       method: 'POST',
     };
-    fetch('http://127.0.0.1:8000/register', params)
+
+    fetch('http://127.0.0.1:8000/register', paramsRegister)
       .then((resp) => resp.json())
       .then((parsed) => {
         if (parsed.errors) {
           this.setState({ errors: parsed.errors, loading: false });
         } else {
-          localStorage.setItem('role', parsed.user.role);
-          localStorage.setItem('id', parsed.user.id);
-          localStorage.setItem('session', parsed.access_token);
-          history.push('/');
+          const grantStatus = {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${localStorage.getItem('session')}`,
+            },
+            body: JSON.stringify({
+              user_id: parsed.user.id,
+            }),
+            method: 'POST',
+          };
+          fetch('http://127.0.0.1:8000/api/giveLibrarianRole', grantStatus)
+            .then((resp) => resp.json())
+            .then((parsed) => {
+              this.setState({ loading: false });
+              alert(`Success! User was registered and ${parsed.message}`);
+            });
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e);
+        this.setState({ errors: { password: 'An unhandled error has occured, please try again.' }, loading: false });
+      });
   }
 
   render() {
@@ -47,8 +62,11 @@ class Register extends React.Component {
     const { loading } = this.state;
     return (
       <div className="container">
+        <div className="shadow-lg p-3 mb-2 bg-white rounded">
+          <h2 className="p-2">Administrators panel</h2>
+        </div>
         {!loading ? (
-          <FormWrapper callBack={this.submitForm} submitText="Register">
+          <FormWrapper callBack={this.submitForm} submitText="Register librarian">
             <>
               <Input labelText="Name" id="nameField" error={name}>
                 <input type="text" className="form-control" id="nameField" placeholder="John Rambo" ref={(input) => this.nameInput = input} />
@@ -71,8 +89,4 @@ class Register extends React.Component {
   }
 }
 
-Register.propTypes = {
-  history: PropTypes.object.isRequired,
-};
-
-export default Register;
+export default Panel;

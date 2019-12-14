@@ -12,7 +12,7 @@ class navBarRoutes {
     ];
   }
 
-  getNavLoggedInUser(logout) {
+  getNavLoggedInUser(logout, path) {
     return [
       { name: 'Home', url: '/EBClient/' },
       {
@@ -23,15 +23,15 @@ class navBarRoutes {
         },
       },
       {
-        name: 'My Account',
-        url: `/EBClient/User/${this.user.id}`,
+        name: 'My Panel',
+        url: `/EBClient/${path}/${this.user}`,
       },
     ];
   }
 
-  getNavigation(logout = () => {}) {
+  getNavigation(logout = () => {}, path = 'UserPanel') {
     if (this.user) {
-      return this.getNavLoggedInUser(logout);
+      return this.getNavLoggedInUser(logout, path);
     }
 
     return this.getNavLoggedOut();

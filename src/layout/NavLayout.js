@@ -1,3 +1,5 @@
+/* eslint-disable new-cap */
+/* eslint-disable react/prop-types */
 /* eslint-disable react/no-did-update-set-state */
 import React from 'react';
 import { withRouter } from 'react-router-dom';
@@ -8,33 +10,35 @@ import NavBar from '../components/navBar';
 class NavLayout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { loggedIn: false };
+    this.state = { loggedIn: false, panelPath: 'UserPanel' };
     this.handleLogOut = this.handleLogOut.bind(this);
   }
 
   componentDidMount() {
-    this.setState({ loggedIn: localStorage.getItem('isUser') });
+    this.setState({ loggedIn: localStorage.getItem('id'), panelPath: localStorage.getItem('role') });
   }
 
   componentDidUpdate() {
     const { loggedIn } = this.state;
-    const storage = localStorage.getItem('isUser');
-    if (storage !== loggedIn) {
-      this.setState({ loggedIn: storage });
+    const id = localStorage.getItem('id');
+    const panelPath = localStorage.getItem('role');
+    if (id !== loggedIn) {
+      this.setState({ loggedIn: id, panelPath });
     }
   }
 
   handleLogOut() {
-    localStorage.removeItem('isUser');
+    localStorage.clear();
     const { history } = this.props;
     history.push('/EBClient/Login');
   }
 
   render() {
     const { children } = this.props;
+    const { panelPath, loggedIn } = this.state;
     return (
       <div>
-        <NavBar routes={new navBarRoutes(this.state.loggedIn).getNavigation(this.handleLogOut)} />
+        <NavBar routes={new navBarRoutes(loggedIn).getNavigation(this.handleLogOut, panelPath)} />
         {children}
       </div>
     );
