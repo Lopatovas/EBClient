@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 /* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -39,7 +40,8 @@ class Login extends React.Component {
           localStorage.setItem('role', parsed.user.role);
           localStorage.setItem('id', parsed.user.id);
           localStorage.setItem('session', parsed.access_token);
-          history.push('/');
+          alert('Welcome back!');
+          history.push('/EBClient/');
         }
       })
       .catch((e) => {
@@ -49,8 +51,8 @@ class Login extends React.Component {
   }
 
   render() {
-    const { email, password } = this.state.errors;
-    const { loading } = this.state;
+    const { loading, errors } = this.state;
+    const { email, password } = errors;
     return (
       <div className="container">
         {!loading ? (

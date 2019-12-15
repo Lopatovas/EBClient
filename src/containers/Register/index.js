@@ -36,7 +36,8 @@ class Register extends React.Component {
           localStorage.setItem('role', parsed.user.role);
           localStorage.setItem('id', parsed.user.id);
           localStorage.setItem('session', parsed.access_token);
-          history.push('/');
+          alert('Registration complete!');
+          history.push('/EBClient/');
         }
       })
       .catch((e) => console.log(e));

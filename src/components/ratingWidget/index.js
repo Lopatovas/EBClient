@@ -7,7 +7,7 @@ function Rating(props) {
   return (
     <div className="row">
       <div className="rating">
-        {checked === 5 ? <input type="radio" id={`star5-${id}`} name="rating" value="5" defaultChecked /> : <input type="radio" id="star5" name="rating" value="5" />}
+        {checked === 5 ? <input type="radio" id={`star5-${id}`} name="rating" value="5" checked /> : <input type="radio" id="star5" name="rating" value="5" />}
         <label htmlFor={`star5-${id}`} title="Meh">5 stars</label>
         <input type="radio" id={`star4-${id}`} name="rating" value="4" />
         <label htmlFor={`star4-${id}`} title="Kinda bad">4 stars</label>

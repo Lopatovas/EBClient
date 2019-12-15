@@ -1,89 +1,88 @@
 import React from 'react';
-
-import FormWrapper from '../../components/formWrapper';
-import Input from '../../components/input';
+import CreateLibrary from '../../modals/createLibrary';
 
 class Panel extends React.Component {
   constructor(props) {
     super(props);
-    this.submitForm = this.submitForm.bind(this);
-    this.state = { errors: {}, loading: false };
+    this.state = { loading: false, errors: { address: '', password: '', description: '' }, modal: false };
+    this.createLibrary = this.createLibrary.bind(this);
+    this.toggle = this.toggle.bind(this);
   }
 
-  submitForm() {
+
+  toggle() {
+    this.setState({ modal: !this.state.modal });
+  }
+
+  createLibrary(name, address, description) {
     this.setState({ loading: true });
-    const paramsRegister = {
+    const params = {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('session')}`,
       },
       body: JSON.stringify({
-        name: this.nameInput.value,
-        email: this.emailInput.value,
-        password: this.passwordInput.value,
-        password_confirmation: this.passwordInput.value,
+        name,
+        address,
+        description,
+        status: 'available',
       }),
       method: 'POST',
     };
-
-    fetch('http://127.0.0.1:8000/register', paramsRegister)
+    fetch('http://127.0.0.1:8000/api/library/create', params)
       .then((resp) => resp.json())
       .then((parsed) => {
         if (parsed.errors) {
           this.setState({ errors: parsed.errors, loading: false });
         } else {
-          const grantStatus = {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('session')}`,
-            },
-            body: JSON.stringify({
-              user_id: parsed.user.id,
-            }),
-            method: 'POST',
-          };
-          fetch('http://127.0.0.1:8000/api/giveLibrarianRole', grantStatus)
-            .then((resp) => resp.json())
-            .then((parsed) => {
-              this.setState({ loading: false });
-              alert(`Success! User was registered and ${parsed.message}`);
-            });
+          console.log(parsed);
+          this.setState({ loading: false });
+          alert('Library created!');
+          this.toggle();
         }
       })
       .catch((e) => {
+        alert('An unknow error has occured, please try again');
         console.log(e);
-        this.setState({ errors: { password: 'An unhandled error has occured, please try again.' }, loading: false });
+        this.setState({ loading: false });
       });
   }
 
   render() {
-    const { email, password, name } = this.state.errors;
-    const { loading } = this.state;
+    const { loading, errors, modal } = this.state;
+    const { address, description, name } = errors;
     return (
       <div className="container">
         <div className="shadow-lg p-3 mb-2 bg-white rounded">
           <h2 className="p-2">Administrators panel</h2>
         </div>
-        {!loading ? (
-          <FormWrapper callBack={this.submitForm} submitText="Register librarian">
-            <>
-              <Input labelText="Name" id="nameField" error={name}>
-                <input type="text" className="form-control" id="nameField" placeholder="John Rambo" ref={(input) => this.nameInput = input} />
-              </Input>
-              <Input labelText="Email" id="emailField" error={email}>
-                <input type="email" className="form-control" id="emailField" placeholder="John@Rambo.com" ref={(input) => this.emailInput = input} />
-              </Input>
-              <Input labelText="Password" id="passwordField" error={password}>
-                <input type="password" className="form-control" id="passwordField" placeholder="" ref={(input) => this.passwordInput = input} />
-              </Input>
-            </>
-          </FormWrapper>
-        ) : (
-          <div className="spinner-border text-primary" style={{ marginLeft: '50%' }} role="status">
-            <span className="sr-only">Loading...</span>
-          </div>
-        )}
+        <div className="shadow-lg p-3 mb-2 bg-white rounded">
+          <h4 className="p-2 border-bottom">Library panel</h4>
+          <button
+            type="button"
+            className="btn btn-light"
+            onClick={this.toggle}
+          >
+          Create library
+          </button>
+        </div>
+        <div className="container">
+          {!loading ? (
+            <CreateLibrary
+              address={address}
+              description={description}
+              name={name}
+              toggle={this.toggle}
+              modal={modal}
+              createLibrary={this.createLibrary}
+            />
+          ) : (
+            <div className="spinner-border text-primary" style={{ marginLeft: '50%' }} role="status">
+              <span className="sr-only">Loading...</span>
+            </div>
+          )}
+        </div>
       </div>
     );
   }

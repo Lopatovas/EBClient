@@ -5,12 +5,24 @@ import LibraryCard from '../../components/libraryCard';
 class Home extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { loggedIn: false };
+    this.state = { loggedIn: false, libraries: [] };
     this.handleLogOut = this.handleLogOut.bind(this);
   }
 
   componentDidMount() {
+    this.getLibraries();
     this.setState({ loggedIn: localStorage.getItem('isUser') });
+  }
+
+  getLibraries() {
+    const params = {
+      method: 'GET',
+    };
+    this.setState({ loading: true });
+    fetch('http://127.0.0.1:8000/library/index', params)
+      .then((resp) => resp.json())
+      .then((parsed) => { this.setState({ libraries: parsed.library }); })
+      .catch((e) => console.log(e));
   }
 
   handleLogOut() {
@@ -21,26 +33,17 @@ class Home extends React.Component {
 
 
   render() {
+    const { libraries } = this.state;
     return (
       <div className="container">
-        <LibraryCard
-          cardHeader="Amazing library v1.0"
-          cardDescription="Best ever"
-          buttonTitle="Lego"
-          id="1"
-        />
-        <LibraryCard
-          cardHeader="Amazing library v2.0"
-          cardDescription="Best ever"
-          buttonTitle="Lego"
-          id="2"
-        />
-        <LibraryCard
-          cardHeader="Amazing library v3.0"
-          cardDescription="Best ever"
-          buttonTitle="Lego"
-          id="3"
-        />
+        {libraries.map((library) => (
+          <LibraryCard
+            cardHeader={library.name}
+            cardDescription={library.description}
+            buttonTitle="View Library"
+            id={library.id}
+          />
+        ))}
       </div>
     );
   }
