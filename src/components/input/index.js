@@ -17,7 +17,7 @@ function Input(props) {
 Input.propTypes = {
   labelText: PropTypes.string,
   id: PropTypes.string,
-  error: PropTypes.array,
+  error: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,

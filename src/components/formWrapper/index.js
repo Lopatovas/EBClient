@@ -19,7 +19,7 @@ function FormWrapper(props) {
 }
 
 FormWrapper.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.object),
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.object), PropTypes.object]),
   submitText: PropTypes.string,
   callBack: PropTypes.func.isRequired,
 };

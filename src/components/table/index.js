@@ -2,26 +2,31 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function Table(props) {
-  const {tableHeader, tableItems, withActions, editHandler, tableAction} = props;
+  const {
+    tableHeader, tableItems, withActions, editHandler, tableAction,
+  } = props;
   return (
     <table className="table table-hover">
-  <thead>
-    <tr>
-      {tableHeader.map((item, i) => <th scope="col" key={i}>{item}</th>)}
-      {withActions ?       
-          <th scope="col" colSpan="2">Actions</th> : null}
-    </tr>
-  </thead>
-  <tbody>
-    {tableItems.map((item, i) => 
-    <tr key={i} onClick={() => {tableAction(item);}}>
-      <th scope="row">{i+1}</th>
-      <td>{item.name}</td>
-      <td>{item.taken_to ? item.taken_to : item.amount}</td>
-      {withActions ? <td><button onClick={ () => {editHandler(item)}} className="btn btn-light btn-sm"><i className="fa fa-plus"></i></button></td> : null}
-    </tr>)}
-  </tbody>
-</table>
+      <thead>
+        <tr>
+          {tableHeader.map((item, i) => <th scope="col" key={i}>{item}</th>)}
+          {withActions
+            ? <th scope="col" colSpan="2">Actions</th> : null}
+        </tr>
+      </thead>
+      <tbody>
+        {tableItems.map((item, i) => (
+          <tr key={i}>
+            <th scope="row">{i + 1}</th>
+            <td>{item.name}</td>
+            <td>{item.address}</td>
+            <td>{item.description.length > 30 ? `${item.description.slice(0, 9)}...` : item.description}</td>
+            {withActions ? <td><button onClick={() => { tableAction(item); }} className="btn btn-light btn-sm"><i className="fa fa-edit" /></button></td> : null}
+            {withActions ? <td><button onClick={() => { editHandler(item); }} className="btn btn-light btn-sm"><i className="fa fa-trash" /></button></td> : null}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
@@ -35,7 +40,7 @@ Table.propTypes = {
 
 Table.defaultProps = {
   tableHeader: [],
-  tableItems: [{name: '', amount: 0}],
+  tableItems: [{ name: '', amount: 0 }],
   withActions: false,
   editHandler: () => {},
   tableAction: () => {},
