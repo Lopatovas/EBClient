@@ -21,7 +21,7 @@ LibraryCard.propTypes = {
   cardHeader: PropTypes.string,
   cardDescription: PropTypes.string,
   buttonTitle: PropTypes.string,
-  id: PropTypes.string.isRequired,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 LibraryCard.defaultProps = {

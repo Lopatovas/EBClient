@@ -40,6 +40,7 @@ class Login extends React.Component {
           localStorage.setItem('role', parsed.user.role);
           localStorage.setItem('id', parsed.user.id);
           localStorage.setItem('session', parsed.access_token);
+          localStorage.setItem('library', parsed.user.library_id);
           alert('Welcome back!');
           history.push('/EBClient/');
         }

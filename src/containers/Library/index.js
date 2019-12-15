@@ -7,7 +7,7 @@ import BookCard from '../../components/bookCard';
 class Library extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { books: [] };
+    this.state = { books: [], querry: '' };
   }
 
   componentDidMount() {
@@ -19,25 +19,29 @@ class Library extends React.Component {
       method: 'GET',
     };
     this.setState({ loading: true });
-    fetch(`http://127.0.0.1:8000/book/getBookByLibrary/${this.props.match.params.id}`, params)
+    fetch(`http://127.0.0.1:8000/book/showBookByLibrary/${this.props.match.params.id}`, params)
       .then((resp) => resp.json())
       .then((parsed) => { console.log(parsed); this.setState({ books: parsed.books }); })
       .catch((e) => console.log(e));
   }
 
   render() {
-    const { books } = this.state;
+    const { books, querry } = this.state;
     return (
       <div>
-        {localStorage.getItem('isUser') ? <NavBar routes={navBarRoutes.SIGNED_IN} /> : <NavBar routes={navBarRoutes.DEFAULT} />}
+        <form className="mx-auto" style={{ width: '200px' }}>
+          <input className="form-control" type="search" placeholder="Search" aria-label="Search" onChange={(e) => { this.setState({ querry: e.target.value }); }} />
+        </form>
         <div className="container d-flex flex-row flex-wrap">
           {books.map((book) => (
-            <BookCard
-              id={book.id}
-              title={book.title}
-              description={book.description}
-              buttonTitle="Let's check it out!"
-            />
+            book.name.toLowerCase().includes(querry.toLowerCase()) ? (
+              <BookCard
+                id={book.id}
+                title={book.name}
+                description={book.description}
+                buttonTitle="Let's check it out!"
+              />
+            ) : null
           ))}
         </div>
       </div>
