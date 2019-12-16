@@ -14,17 +14,19 @@ class Panel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      errors: {}, loading: false, modal: false, selectedBook: null,
+      errors: {}, loading: false, modal: false, selectedBook: null, messages: [],
     };
     this.getBooks = this.getBooks.bind(this);
     this.createBook = this.createBook.bind(this);
     this.toggle = this.toggle.bind(this);
     this.editBook = this.editBook.bind(this);
+    this.getMessages = this.getMessages.bind(this);
   }
 
   componentDidMount() {
     this.setState({ loggedIn: localStorage.getItem('isUser') });
     this.getBooks();
+    this.getMessages();
   }
 
   getBooks() {
@@ -35,6 +37,17 @@ class Panel extends React.Component {
     fetch(`http://127.0.0.1:8000/book/showBookByLibrary/${localStorage.getItem('library')}`, params)
       .then((resp) => resp.json())
       .then((parsed) => { console.log(parsed); this.setState({ books: parsed.books, loading: false }); })
+      .catch((e) => console.log(e));
+  }
+
+  getMessages() {
+    const params = {
+      method: 'GET',
+    };
+    this.setState({ loading: true });
+    fetch(`http://127.0.0.1:8000//message/showAllByUser/${localStorage.getItem('id')}`, params)
+      .then((resp) => resp.json())
+      .then((parsed) => { console.log(parsed); this.setState({ messages: [...parsed.messagesTo, ...parsed.messagesFrom], loading: false }); })
       .catch((e) => console.log(e));
   }
 
@@ -107,6 +120,7 @@ class Panel extends React.Component {
         genre,
         description,
         status,
+        user_id: this.state.selectedBook.user_id,
         taken_from: date.toISOString().slice(0, 10),
         taken_to: new Date((new Date()).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
       });
@@ -172,7 +186,7 @@ class Panel extends React.Component {
 
   render() {
     const {
-      loading, modal, books, errors, selectedBook,
+      loading, modal, books, errors, selectedBook, messages,
     } = this.state;
     const { address, description, name } = errors;
     return (
@@ -248,7 +262,7 @@ class Panel extends React.Component {
           </h4>
           <MessageWithLoader
             tableHeader={['From', 'To', 'Message']}
-            tableItems={books}
+            tableItems={messages}
             isLoading={loading}
           />
           <button

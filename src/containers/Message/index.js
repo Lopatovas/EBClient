@@ -6,6 +6,27 @@ class Message extends React.Component {
     super(props);
     this.state = { options: [] };
     this.sendMessage = this.sendMessage.bind(this);
+    this.getUsers = this.getUsers.bind(this);
+  }
+
+  componentDidMount() {
+    this.getUsers();
+  }
+
+  getUsers() {
+    const params = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('session')}`,
+      },
+    };
+    this.setState({ loadingUsers: true });
+    fetch('http://127.0.0.1:8000/api/user/index', params)
+      .then((resp) => resp.json())
+      .then((parsed) => { this.setState({ options: parsed.users, loadingUsers: false }); })
+      .catch((e) => console.log(e));
   }
 
   sendMessage(message) {
@@ -16,7 +37,7 @@ class Message extends React.Component {
         Authorization: `Bearer ${localStorage.getItem('session')}`,
       },
       body: JSON.stringify({
-        to_id: 2,
+        to_id: this.selectBox.value,
         from_id: this.props.match.params.id,
         message,
         status: 'available',
@@ -46,7 +67,7 @@ class Message extends React.Component {
         <Comment label="Message" handleComment={this.sendMessage}>
           <div className="input-group">
             <select className="custom-select mb-2" id="inputGroupSelect" ref={(input) => { this.selectBox = input; }}>
-              {options.map((opt) => <option value={opt.id}>{opt.name}</option>)}
+              {options.map((opt) => (opt.role !== 'admin' ? <option value={opt.id}>{opt.name}</option> : null))}
             </select>
           </div>
         </Comment>

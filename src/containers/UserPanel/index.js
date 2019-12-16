@@ -12,61 +12,70 @@ class Panel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loggedIn: false, books: [], loading: false, debt: [],
+      loggedIn: false, books: [], loading: false, debt: [], messages: [],
     };
     this.getBooks = this.getBooks.bind(this);
-    this.checkDebt = this.checkDebt.bind(this);
+    this.getMessages = this.getMessages.bind(this);
   }
 
   componentDidMount() {
     this.setState({ loggedIn: localStorage.getItem('isUser') });
-    this.checkDebt();
+    this.getMessages();
+    this.getBooks();
+  }
+
+  getMessages() {
+    const params = {
+      method: 'GET',
+    };
+    this.setState({ loading: true });
+    fetch(`http://127.0.0.1:8000/message/showAllByUser/${localStorage.getItem('id')}`, params)
+      .then((resp) => resp.json())
+      .then((parsed) => { console.log(parsed); this.setState({ messages: [...parsed.messagesTo, ...parsed.messagesFrom], loading: false }); })
+      .catch((e) => console.log(e));
   }
 
   getBooks() {
     const params = {
       method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('session')}`,
+      },
+
     };
     this.setState({ loading: true });
-    fetch(`http://127.0.0.1:8000/book/showUserBookHistory/${this.props.match.params.id}`, params)
+    fetch(`http://127.0.0.1:8000/api/book/showUserBookHistory/${this.props.match.params.id}`, params)
       .then((resp) => resp.json())
       .then((parsed) => this.setState({ books: parsed.history, loading: false }))
       .catch((e) => console.log(e));
   }
 
-  checkDebt() {
-    const params = {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'GET',
-    };
-    this.setState({ loading: true });
-    fetch(`http://127.0.0.1:8000/book/showUserDebts/${localStorage.getItem('id')}`, params)
-      .then((resp) => resp.json())
-      .then((parsed) => {
-        this.setState({ debt: parsed.books, loading: false });
-        if (parsed.books.length > 0) {
-          alert('You have a debt');
-          this.setState({ books: parsed.books, loading: false });
-        } else {
-          this.getBooks();
-        }
-      })
-      .catch((e) => console.log(e));
-  }
-
   render() {
-    const { debt, loading, books } = this.state;
+    const {
+      loading, books, messages,
+    } = this.state;
+    console.log(books);
     return (
       <div className="container">
         <div className="card">
-          <TableWithLoader
-            tableHeader={debt.length > 0 ? ['Number', 'Name', 'Taken Till'] : ['ID.', 'Name', 'Author', 'Genre', 'Publisher', 'Status']}
-            tableItems={debt.length > 0 ? debt : books}
-            isLoading={loading}
-          />
+          <table className="table table-hover">
+            <thead>
+              <tr>
+                {['ID.', 'Taken From', 'Taken To'].map((item, i) => <th scope="col" key={i}>{item}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {books.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.book_id}</td>
+                  <td>{item.taken_from}</td>
+                  <td>{item.taken_to ? item.taken_to : 'Not confirmed yet'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
         <div className="card mt-2">
           <h4 className="p-3">
@@ -74,7 +83,7 @@ class Panel extends React.Component {
           </h4>
           <MessageWithLoader
             tableHeader={['From', 'To', 'Message']}
-            tableItems={books}
+            tableItems={messages}
             isLoading={loading}
           />
           <button
