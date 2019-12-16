@@ -11,7 +11,8 @@ function CommentInput(props) {
   };
   return (
     <FormWrapper callBack={submitForm} submitText="Submit">
-      <Input labelText="Comment" id="descriptionField">
+      <Input labelText={props.label ? props.label : 'Comment'} id="descriptionField">
+        {props.children}
         <textarea type="text" rows={5} style={{ resize: 'none' }} className="form-control" id="descriptionField" placeholder="" ref={(input) => { descriptionField = input; }} />
       </Input>
     </FormWrapper>

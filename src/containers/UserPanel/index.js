@@ -3,8 +3,10 @@ import React from 'react';
 
 import Table from '../../components/bookTable';
 import WithLoading from '../../HOC/loader';
+import MessageTable from '../../components/messageTable';
 
 const TableWithLoader = WithLoading(Table);
+const MessageWithLoader = WithLoading(MessageTable);
 
 class Panel extends React.Component {
   constructor(props) {
@@ -65,6 +67,23 @@ class Panel extends React.Component {
             tableItems={debt.length > 0 ? debt : books}
             isLoading={loading}
           />
+        </div>
+        <div className="card mt-2">
+          <h4 className="p-3">
+            Messages
+          </h4>
+          <MessageWithLoader
+            tableHeader={['From', 'To', 'Message']}
+            tableItems={books}
+            isLoading={loading}
+          />
+          <button
+            type="button"
+            className="btn btn-light"
+            onClick={() => { this.props.history.push(`/EBClient/Message/${this.props.match.params.id}`); }}
+          >
+            New Message
+          </button>
         </div>
       </div>
     );
