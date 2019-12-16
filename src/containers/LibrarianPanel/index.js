@@ -81,22 +81,41 @@ class Panel extends React.Component {
       });
   }
 
-  editBook(name, publisher, genre, description, author) {
+  editBook(name, publisher, genre, description, author, status) {
     this.setState({ loading: true });
-    const params = {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('session')}`,
-      },
-      body: JSON.stringify({
+    let body = JSON.stringify({
+      book_id: this.state.selectedBook.id,
+      name,
+      author,
+      publisher,
+      genre,
+      description,
+      status,
+      user_id: null,
+      taken_from: null,
+      taken_to: null,
+    });
+    if (status === 'taken') {
+      const date = new Date();
+      body = JSON.stringify({
         book_id: this.state.selectedBook.id,
         name,
         author,
         publisher,
         genre,
         description,
-      }),
+        status,
+        taken_from: date.toISOString().slice(0, 10),
+        taken_to: new Date((new Date()).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+      });
+    }
+    const params = {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('session')}`,
+      },
+      body,
       method: 'POST',
     };
     fetch('http://127.0.0.1:8000/api/book/update', params)
@@ -196,6 +215,8 @@ class Panel extends React.Component {
                   genreValue={selectedBook.genre}
                   descriptionValue={selectedBook.description}
                   authorValue={selectedBook.author}
+                  options={[{ id: 'taken', name: 'Taken' }, { id: 'not_taken', name: 'Available' }]}
+                  selectedOpt={selectedBook.status}
                 />
               )
                 : (

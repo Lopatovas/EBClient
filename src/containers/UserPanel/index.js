@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-state */
 import React from 'react';
 
-import Table from '../../components/table';
+import Table from '../../components/bookTable';
 import WithLoading from '../../HOC/loader';
 
 const TableWithLoader = WithLoading(Table);
@@ -13,7 +13,6 @@ class Panel extends React.Component {
       loggedIn: false, books: [], loading: false, debt: [],
     };
     this.getBooks = this.getBooks.bind(this);
-    this.takeBook = this.takeBook.bind(this);
     this.checkDebt = this.checkDebt.bind(this);
   }
 
@@ -27,9 +26,9 @@ class Panel extends React.Component {
       method: 'GET',
     };
     this.setState({ loading: true });
-    fetch('http://127.0.0.1:8000/book/showDistinct', params)
+    fetch(`http://127.0.0.1:8000/book/showUserBookHistory/${this.props.match.params.id}`, params)
       .then((resp) => resp.json())
-      .then((parsed) => this.setState({ books: parsed.books, loading: false }))
+      .then((parsed) => this.setState({ books: parsed.history, loading: false }))
       .catch((e) => console.log(e));
   }
 
@@ -56,39 +55,15 @@ class Panel extends React.Component {
       .catch((e) => console.log(e));
   }
 
-  takeBook(name) {
-    const params = {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('session')}`,
-      },
-      body: JSON.stringify({
-        name,
-      }),
-      method: 'POST',
-    };
-    this.setState({ loading: true });
-    fetch('http://127.0.0.1:8000/api/book/take', params)
-      .then((resp) => resp.json())
-      .then((parsed) => {
-        this.setState({ books: parsed.books, loading: false });
-        this.getBooks();
-      })
-      .catch((e) => console.log(e));
-  }
-
   render() {
     const { debt, loading, books } = this.state;
     return (
       <div className="container">
         <div className="card">
           <TableWithLoader
-            tableHeader={debt.length > 0 ? ['Number', 'Name', 'Taken Till'] : ['Number', 'Name', 'Amount']}
+            tableHeader={debt.length > 0 ? ['Number', 'Name', 'Taken Till'] : ['ID.', 'Name', 'Author', 'Genre', 'Publisher', 'Status']}
             tableItems={debt.length > 0 ? debt : books}
             isLoading={loading}
-            withActions={!(debt.length > 0)}
-            editHandler={(item) => { this.takeBook(item.name); }}
           />
         </div>
       </div>

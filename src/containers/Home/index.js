@@ -42,6 +42,7 @@ class Home extends React.Component {
             cardDescription={library.description}
             buttonTitle="View Library"
             id={library.id}
+            key={library.id}
           />
         ))}
       </div>

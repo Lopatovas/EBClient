@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 // eslint-disable-next-line react/no-array-index-key
 
 import React from 'react';
@@ -26,12 +27,12 @@ class EditBook extends React.Component {
   submitForm() {
     const { createBook } = this.props;
     createBook(this.nameInput.value,
-      this.publisherInput.value, this.genreInput.value, this.descriptionField.value, this.authorInput.value);
+      this.publisherInput.value, this.genreInput.value, this.descriptionField.value, this.authorInput.value, this.selectBox.value);
   }
 
   render() {
     const {
-      toggle, modal, name, address, description,
+      toggle, modal, name, address, description, options, selectedOpt,
     } = this.props;
     return (
       <Modal isOpen={modal}>
@@ -64,6 +65,14 @@ class EditBook extends React.Component {
               <Input labelText="Genre" id="genreField" error={description}>
                 <input type="text" className="form-control" id="genreField" placeholder="Horror" ref={(input) => { this.genreInput = input; }} />
               </Input>
+              <Input labelText="Genre" id="genreField" error={description}>
+                <input type="text" className="form-control" id="genreField" placeholder="Horror" ref={(input) => { this.genreInput = input; }} />
+              </Input>
+              <Input labelText="Status" id="statusField" error={description}>
+                <select className="custom-select mb-2" id="inputGroupSelect" ref={(input) => { this.selectBox = input; }}>
+                  {options.map((opt) => (selectedOpt === opt.id ? <option value={opt.id} selected>{opt.name}</option> : <option value={opt.id}>{opt.name}</option>))}
+                </select>
+              </Input>
             </>
           </FormWrapper>
         </ModalBody>
@@ -84,6 +93,8 @@ EditBook.propTypes = {
   genreValue: PropTypes.string.isRequired,
   publisherValue: PropTypes.string.isRequired,
   descriptionValue: PropTypes.string.isRequired,
+  options: PropTypes.array.isRequired,
+  selectedOpt: PropTypes.string.isRequired,
 };
 
 EditBook.defaultProps = {

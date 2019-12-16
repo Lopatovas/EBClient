@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 export const ModalHeader = (props) => <div className="modal-header">{props.children}</div>;
 
-export const ModalBody = (props) => <div className="modal-body">{props.children}</div>;
+export const ModalBody = (props) => <div className="modal-body" style={{ height: '400px', overflow: 'overlay' }}>{props.children}</div>;
 
 export const ModalFooter = (props) => <div className="modal-footer">{props.children}</div>;
 

@@ -37,6 +37,7 @@ class Library extends React.Component {
             book.name.toLowerCase().includes(querry.toLowerCase()) ? (
               <BookCard
                 id={book.id}
+                key={book.id}
                 title={book.name}
                 description={book.description}
                 buttonTitle="Let's check it out!"

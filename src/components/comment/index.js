@@ -6,15 +6,9 @@ import Rating from '../ratingWidget';
 function Comment(props) {
   const { comment, id } = props;
   return (
-    <div className="card mt-5">
+    <div className="card m-2">
       <div className="card-body">
         <p className="card-text">{comment}</p>
-        <div className="d-flex flex-row flex-wrap justify-content-between align-items-center">
-          <p>
-            User name
-          </p>
-          <Rating checked={5} id={id} />
-        </div>
       </div>
     </div>
   );
